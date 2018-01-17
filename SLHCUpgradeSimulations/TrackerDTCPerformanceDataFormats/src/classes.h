@@ -26,6 +26,7 @@
 #include "SLHCUpgradeSimulations/TrackerDTCPerformanceDataFormats/interface/Hash.h"
 
 #include <vector>
+#include <utility>
 
 
 // Note: see https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideEDMRef for a description of the different EDM helper templates
@@ -59,6 +60,11 @@ namespace SLHCUpgradeSimulations_TrackerDTCPerformanceDataFormats
 		edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<int   > >                                                         dummy_assveci_dtcid_detid;
 		edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<float > >                                                         dummy_assvecf_dtcid_detid;
 		edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<double> >                                                         dummy_assvecd_dtcid_detid;
+		std::pair<TrackerDTCPerformance::DTCId, bool  >                                                                                                                dummy_pair_dtcid_bool  ;
+		std::pair<TrackerDTCPerformance::DTCId, int   >                                                                                                                dummy_pair_dtcid_int   ;
+		std::pair<TrackerDTCPerformance::DTCId, float >                                                                                                                dummy_pair_dtcid_float ;
+		std::pair<TrackerDTCPerformance::DTCId, double>                                                                                                                dummy_pair_dtcid_double;
+		
 		edm::Wrapper< TrackerDTCPerformance::DTCId                                                                                                                   > dummy_wrapper_dtcid;
 		edm::Wrapper< std::vector<TrackerDTCPerformance::DTCId>                                                                                                      > dummy_wrapper_stdvec_dtcid;
 		edm::Wrapper< edm::Ref<std::vector<TrackerDTCPerformance::DTCId>>                                                                                            > dummy_wrapper_edmref_dtcid;
@@ -85,7 +91,10 @@ namespace SLHCUpgradeSimulations_TrackerDTCPerformanceDataFormats
 		edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<int   > >                                         > dummy_wrapper_assveci_dtcid_detid;
 		edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<float > >                                         > dummy_wrapper_assvecf_dtcid_detid;
 		edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<double> >                                         > dummy_wrapper_assvecd_dtcid_detid;
-		
+		edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, bool  > >                                                                                                dummy_wrapper_pair_dtcid_bool  ;
+		edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, int   > >                                                                                                dummy_wrapper_pair_dtcid_int   ;
+		edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, float > >                                                                                                dummy_wrapper_pair_dtcid_float ;
+		edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, double> >                                                                                                dummy_wrapper_pair_dtcid_double;
 	};
 }
 
