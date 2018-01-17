@@ -1,18 +1,10 @@
-#ifndef SLHCUpgradeSimulations_TrackerDTCPerformance_DTCId_hh
-#define SLHCUpgradeSimulations_TrackerDTCPerformance_DTCId_hh
+#ifndef SLHCUpgradeSimulations_TrackerDTCPerformanceDataFormats_DTCId_h
+#define SLHCUpgradeSimulations_TrackerDTCPerformanceDataFormats_DTCId_h
 
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-
-#include "SLHCUpgradeSimulations/TrackerDTCPerformance/interface/Hash.hh"
 
 namespace TrackerDTCPerformance
 {
-	typedef unsigned int ModuleId;
-	typedef unsigned int LayerId;
-	typedef unsigned int OctantId;
-	
 	class DTCId
 	{
 	public:
@@ -29,17 +21,17 @@ namespace TrackerDTCPerformance
 		DTCId& operator=(std::string const& rhs);
 		DTCId& operator=(std::string&& rhs);
 		
-		std::string id()   const noexcept {return dtc_id_;}
-		std::size_t hash() const noexcept {return dtc_id_hash_;}
+		std::string name() const noexcept {return dtc_name_;}
+		std::size_t hash() const noexcept {return dtc_name_hash_;}
 		
-		bool operator< (DTCId const& rhs) const noexcept {return dtc_id_hash_ <  rhs.dtc_id_hash_;}
-		bool operator> (DTCId const& rhs) const noexcept {return dtc_id_hash_ >  rhs.dtc_id_hash_;}
-		bool operator==(DTCId const& rhs) const noexcept {return dtc_id_hash_ ==  rhs.dtc_id_hash_ && dtc_id_ == rhs.dtc_id_;}
-		bool operator!=(DTCId const& rhs) const noexcept {return dtc_id_hash_ !=  rhs.dtc_id_hash_ || dtc_id_ != rhs.dtc_id_;}
+		inline bool operator< (DTCId const& rhs) const noexcept {return dtc_name_hash_ <  rhs.dtc_name_hash_;}
+		inline bool operator> (DTCId const& rhs) const noexcept {return dtc_name_hash_ >  rhs.dtc_name_hash_;}
+		inline bool operator==(DTCId const& rhs) const noexcept {return dtc_name_hash_ == rhs.dtc_name_hash_ && dtc_name_ == rhs.dtc_name_;}
+		inline bool operator!=(DTCId const& rhs) const noexcept {return dtc_name_hash_ != rhs.dtc_name_hash_ || dtc_name_ != rhs.dtc_name_;}
 		
 	private:
-		std::string dtc_id_;
-		std::size_t dtc_id_hash_;
+		std::size_t dtc_name_hash_;
+		std::string dtc_name_;
 	};
 	
 }
@@ -57,4 +49,4 @@ namespace std
 }
 
 
-#endif // end SLHCUpgradeSimulations_TrackerDTCPerformance_DTCId_hh
+#endif // end SLHCUpgradeSimulations_TrackerDTCPerformanceDataFormats_DTCId_hh

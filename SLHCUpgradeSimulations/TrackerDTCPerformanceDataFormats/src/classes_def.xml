@@ -1,0 +1,54 @@
+<lcgdict>
+ <class name="              TrackerDTCPerformance::DTCId                                                                                                                    "></class>
+ <class name="              std::vector<TrackerDTCPerformance::DTCId>                                                                                                       "></class>
+ <class name="              edm::Ref<std::vector<TrackerDTCPerformance::DTCId>>                                                                                             "></class>
+ <class name="              edm::RefVector<std::vector<TrackerDTCPerformance::DTCId>>                                                                                       "></class>
+ <class name="              edm::Ptr<TrackerDTCPerformance::DTCId>                                                                                                          "></class>
+ <class name="              edm::PtrVector<std::vector<TrackerDTCPerformance::DTCId>>                                                                                       "></class>
+ <class name="              edm::RefProd<TrackerDTCPerformance::DTCId>                                                                                                      "></class>
+ <class name="              edm::RefProd<std::vector<TrackerDTCPerformance::DTCId>>                                                                                         "></class>
+ <class name="              edm::AssociationMap<edm::OneToValue           <std::vector<DetId>                       , TrackerDTCPerformance::DTCId                     > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToOne             <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>        > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToMany            <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>        > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, bool  > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, int   > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, float > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, double> >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToValue           <std::vector<TrackerDTCPerformance::DTCId>, DetId                                            > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToOne             <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                               > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToMany            <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                               > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , bool  > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , int   > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , float > >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , double> >  "><field name="transientMap_"    transient = "true"/></class>
+ <class name="              edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<bool  > >                                          "><field name="transientVector_" transient = "true"/></class>
+ <class name="              edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<int   > >                                          "><field name="transientVector_" transient = "true"/></class>
+ <class name="              edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<float > >                                          "><field name="transientVector_" transient = "true"/></class>
+ <class name="              edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<double> >                                          "><field name="transientVector_" transient = "true"/></class>
+ <class name="edm::Wrapper< TrackerDTCPerformance::DTCId                                                                                                                   >"></class>
+ <class name="edm::Wrapper< std::vector<TrackerDTCPerformance::DTCId>                                                                                                      >"></class>
+ <class name="edm::Wrapper< edm::Ref<std::vector<TrackerDTCPerformance::DTCId>>                                                                                            >"></class>
+ <class name="edm::Wrapper< edm::RefVector<std::vector<TrackerDTCPerformance::DTCId>>                                                                                      >"></class>
+ <class name="edm::Wrapper< edm::Ptr<TrackerDTCPerformance::DTCId>                                                                                                         >"></class>
+ <class name="edm::Wrapper< edm::PtrVector<std::vector<TrackerDTCPerformance::DTCId>>                                                                                      >"></class>
+ <class name="edm::Wrapper< edm::RefProd<TrackerDTCPerformance::DTCId>                                                                                                     >"></class>
+ <class name="edm::Wrapper< edm::RefProd<std::vector<TrackerDTCPerformance::DTCId>>                                                                                        >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToValue           <std::vector<DetId>                       , TrackerDTCPerformance::DTCId                     > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToOne             <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>        > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToMany            <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>        > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, bool  > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, int   > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, float > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>                       , std::vector<TrackerDTCPerformance::DTCId>, double> > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToValue           <std::vector<TrackerDTCPerformance::DTCId>, DetId                                            > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToOne             <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                               > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToMany            <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                               > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , bool  > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , int   > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , float > > >"></class>
+ <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId>                       , double> > >"></class>
+ <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<bool  > >                                         >"></class>
+ <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<int   > >                                         >"></class>
+ <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<float > >                                         >"></class>
+ <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<double> >                                         >"></class>
+</lcgdict>

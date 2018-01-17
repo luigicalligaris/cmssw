@@ -20,4 +20,3 @@
 <use name="boost"/>
 <use name="roothistmatrix"/>
 <flags CXXFLAGS="-g -Wno-unused-variable"/>
-<flags EDM_PLUGIN="1"/>
