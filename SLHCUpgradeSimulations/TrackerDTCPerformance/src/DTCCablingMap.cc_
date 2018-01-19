@@ -1,5 +1,5 @@
 #include "SLHCUpgradeSimulations/TrackerDTCPerformance/interface/DTCCablingMap.hh"
-#include "SLHCUpgradeSimulations/TrackerDTCPerformance/interface/DTCId.hh"
+#include "SLHCUpgradeSimulations/TrackerDTCPerformanceDataFormats/interface/DTCId.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include <vector>

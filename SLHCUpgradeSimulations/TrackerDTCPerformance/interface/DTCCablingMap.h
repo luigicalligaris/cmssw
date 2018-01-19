@@ -6,8 +6,14 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "SLHCUpgradeSimulations/TrackerDTCPerformance/interface/DTCId.hh"
+#include "SLHCUpgradeSimulations/TrackerDTCPerformanceDataFormats/interface/DTCId.h"
 #include "DataFormats/DetId/interface/DetId.h"
+
+#include "DataFormats/Common/interface/AssociationMap.h"
+// #include "DataFormats/Common/interface/AssociationVector.h"
+#include "DataFormats/Common/interface/OneToValue.h"
+#include "DataFormats/Common/interface/OneToOne.h"
+#include "DataFormats/Common/interface/OneToManyWithQuality.h"
 
 namespace TrackerDTCPerformance
 {
