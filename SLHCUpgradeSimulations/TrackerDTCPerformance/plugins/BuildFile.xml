@@ -13,6 +13,7 @@
 <use name="MagneticField/Engine"/>
 <use name="MagneticField/Records"/>
 <use name="SimDataFormats/EncodedEventId"/>
+<use name="SLHCUpgradeSimulations/TrackerDTCPerformanceDataFormats"/>
 <use name="boost"/>
 <use name="roothistmatrix"/>
 

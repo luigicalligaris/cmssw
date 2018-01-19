@@ -93,6 +93,7 @@ DTCCablingMapProducer::DTCCablingMapProducer(const edm::ParameterSet& iConfig)
 	
 	produces< std::vector< TrackerDTCPerformance::DTCId >,edm::InRun>().setBranchAlias("AllDTCs");
 	produces< edm::AssociationMap< edm::OneToOne< std::vector<DetId>, std::vector<TrackerDTCPerformance::DTCId> > > >().setBranchAlias("TrackerModuleToDTCMap");
+	produces< edm::AssociationMap< edm::OneToMany< std::vector<TrackerDTCPerformance::DTCId>, std::vector<DetId> > > >().setBranchAlias("DTCToTrackerModulesMap");
 }
 
 void DTCCablingMapProducer::beginJob()
@@ -119,11 +120,6 @@ void DTCCablingMapProducer::beginRunProduce(edm::Run&, edm::EventSetup const&)
 // {
 // 	
 // }
-
-void DTCCablingMapProducer::ReadCablingFromCSV(char const* csvFilePath)
-{
-	
-}
 
 void DTCCablingMapProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {

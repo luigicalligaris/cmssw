@@ -55,8 +55,8 @@
  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<int   > >                                         >"></class>
  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<float > >                                         >"></class>
  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<TrackerDTCPerformance::DTCId> >, std::vector<double> >                                         >"></class>
- <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, bool  > >                                                                                              >"></class>
- <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, int   > >                                                                                              >"></class>
- <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, float > >                                                                                              >"></class>
- <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, double> >                                                                                              >"></class>
+<!--  <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, bool  > >                                                                                              >"></class> -->
+<!--  <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, int   > >                                                                                              >"></class> -->
+<!--  <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, float > >                                                                                              >"></class> -->
+<!--  <class name="edm::Wrapper< std::pair<TrackerDTCPerformance::DTCId, double> >                                                                                              >"></class> -->
 </lcgdict>
