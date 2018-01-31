@@ -1,0 +1,9 @@
+<use name="CoralBase"/>
+<use name="CondCore/DBOutputService"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="CondFormats/Phase2TrackerObjects"/>
+<use name="DataFormats/Phase2TrackerDTC"/>
+<use name="CondFormats/DataRecord"/>
+<flags EDM_PLUGIN="1"/>

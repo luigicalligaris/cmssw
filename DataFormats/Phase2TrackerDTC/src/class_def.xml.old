@@ -1,0 +1,59 @@
+<lcgdict>
+	<!--  <class name="DTCId                                                                                            "></class>                                                                      -->
+	<!--  <class name="std::vector<DTCId>                                                                               "></class>                                                                      -->
+	<!--  <class name="edm::Ref<std::vector<DTCId>>                                                                     "></class>                                                                      -->
+	<!--  <class name="edm::RefVector<std::vector<DTCId>>                                                               "></class>                                                                      -->
+	<!--  <class name="edm::Ptr<DTCId>                                                                                  "></class>                                                                      -->
+	<!--  <class name="edm::PtrVector<std::vector<DTCId>>                                                               "></class>                                                                      -->
+	<!--  <class name="edm::RefProd<DTCId>                                                                              "></class>                                                                      -->
+	<!--  <class name="edm::RefProd<std::vector<DTCId>>                                                                 "></class>                                                                      -->
+	<!--  <class name="edm::AssociationMap<edm::OneToValue           <std::vector<DetId>, DTCId                     > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToOne             <std::vector<DetId>, std::vector<DTCId>        > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToMany            <std::vector<DetId>, std::vector<DTCId>        > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, bool  > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, int   > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, float > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, double> > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToValue           <std::vector<DTCId>, DetId                     > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToOne             <std::vector<DTCId>, std::vector<DetId>        > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToMany            <std::vector<DTCId>, std::vector<DetId>        > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, bool  > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, int   > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, float > > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, double> > "><field name="transientMap_"    transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<bool  > >                  "><field name="transientVector_" transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<int   > >                  "><field name="transientVector_" transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<float > >                  "><field name="transientVector_" transient = "true"/></class>                   -->
+	<!--  <class name="edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<double> >                  "><field name="transientVector_" transient = "true"/></class>                   -->
+	<!--  <class name="std::pair<DTCId, bool  >                                                                         "></class>                                                                      -->
+	<!--  <class name="std::pair<DTCId, int   >                                                                         "></class>                                                                      -->
+	<!--  <class name="std::pair<DTCId, float >                                                                         "></class>                                                                      -->
+	<!--  <class name="std::pair<DTCId, double>                                                                         "></class>                                                                      -->
+	<!-- 	                                                                                                                                                                                              -->
+	<!--  <class name="edm::Wrapper< DTCId                                                                                             > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< std::vector<DTCId>                                                                                > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::Ref<std::vector<DTCId>>                                                                      > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::RefVector<std::vector<DTCId>>                                                                > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::Ptr<DTCId>                                                                                   > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::PtrVector<std::vector<DTCId>>                                                                > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::RefProd<DTCId>                                                                               > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::RefProd<std::vector<DTCId>>                                                                  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToValue           <std::vector<DetId>, DTCId                     > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToOne             <std::vector<DetId>, std::vector<DTCId>        > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToMany            <std::vector<DetId>, std::vector<DTCId>        > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, bool  > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, int   > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, float > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DetId>, std::vector<DTCId>, double> >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToValue           <std::vector<DTCId>, DetId                     > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToOne             <std::vector<DTCId>, std::vector<DetId>        > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToMany            <std::vector<DTCId>, std::vector<DetId>        > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, bool  > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, int   > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, float > >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationMap<edm::OneToManyWithQuality <std::vector<DTCId>, std::vector<DetId>, double> >  > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<bool  > >                   > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<int   > >                   > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<float > >                   > "></class>                                                     -->
+	<!--  <class name="edm::Wrapper< edm::AssociationVector<edm::RefProd<std::vector<DTCId> >, std::vector<double> >                   > "></class>                                                     -->
+</lcgdict>                                                                                                                                                                                          -->
