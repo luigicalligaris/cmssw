@@ -11,7 +11,7 @@ process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     DumpStat=cms.untracked.bool(True),
     toGet = cms.VPSet(cms.PSet(
         record = cms.string('OuterTrackerDTCCablingMapRcd'),
-        tag = cms.string("DTCCablingMapProducer_test")
+        tag = cms.string("DTCCablingTest")
     )),
 )
 

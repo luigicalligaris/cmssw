@@ -122,7 +122,7 @@ void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& des
   desc.add<int>("verbosity", 0);
   desc.add<long long unsigned int>("iovBeginTime", 1);
   desc.add<std::string>("record","OuterTrackerDTCCablingMapRcd");
-  desc.add<edm::FileInPath>("inputCablingFileName");
+  desc.add<edm::FileInPath>("inputCablingFileName",edm::FileInPath());
 	descriptions.addDefault(desc);
 }
 
@@ -164,8 +164,16 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 	{
 		
 		string csvLine;
+		
+		unsigned lineNumber = 0;
+		
 		while (std::getline(csvFile, csvLine))
 		{
+			if (verbosity_ >= 1)
+			{
+				cout << "Reading CSV file line: " << ++lineNumber << ": \"" << csvLine << "\"" << endl;
+			}
+			
 			istringstream csvStream(csvLine);
 			vector<string> csvColumn;
 			string csvElement;
@@ -180,8 +188,28 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 			constexpr const unsigned int csvFormat_idetid   =  0;
 			constexpr const unsigned int csvFormat_idtcid   =  9;
 			
+			if (verbosity_ >= 2)
+			{
+				cout << "-- split line is: [";
+				
+				for (string const& s : csvColumn)
+					cout << "\"" << s << "\", ";
+				
+				cout << "]" << endl;
+			}
+			
 			if (csvColumn.size() == csvFormat_ncolumns)
 			{
+				// Skip the legend lines
+				if (0 == csvColumn[0].compare(std::string("Module DetId/U")))
+				{
+					if (verbosity_ >= 1)
+					{
+						cout << "-- skipping as it is a legend line" << endl;
+					}
+					continue;
+				}
+				
 				uint32_t detIdRaw;
 				
 				try
@@ -192,7 +220,7 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 				{
 					if (verbosity_ >= 0)
 					{
-						cout << "Reading CSV file: malformed DetId string in CSV file: \"" << csvLine << "\"" << endl;
+						cout << "-- malformed DetId string in CSV file: \"" << csvLine << "\"" << endl;
 					}
 					throw e;
 				}
@@ -201,7 +229,7 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 				
 				if (verbosity_ >= 3)
 				{
-					cout << "Reading CSV file: DetId = " << detIdRaw << " dtcId = " << dtcId.name() << endl;
+					cout << "-- DetId = " << detIdRaw << " dtcId = " << dtcId.name() << endl;
 				}
 				
 				{
@@ -213,8 +241,8 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 					}
 				}
 				
-				pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(std::make_pair<uint32_t, DTCId>(DetId(detIdRaw), DTCId(dtcId)) );
-				pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(std::make_pair<DTCId, uint32_t>(DTCId(dtcId), DetId(detIdRaw)) );
+				pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(std::make_pair<uint32_t, DTCId>(uint32_t(detIdRaw), DTCId(dtcId)) );
+				pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(std::make_pair<DTCId, uint32_t>(DTCId(dtcId), uint32_t(detIdRaw)) );
 			}
 			else
 			{
