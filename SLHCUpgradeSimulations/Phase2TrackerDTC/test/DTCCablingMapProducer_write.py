@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("DTCCablingMapTestProducerWrite")
+process = cms.Process("DTCCablingMapTestProducerWriteDEMO")
 
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")

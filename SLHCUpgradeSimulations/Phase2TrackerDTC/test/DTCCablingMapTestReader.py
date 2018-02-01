@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("TestDTCCablingMapReader")
+process = cms.Process("TestDTCCablingMapReaderDEMO")
 
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")

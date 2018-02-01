@@ -23,8 +23,8 @@ public:
 	DTCId& operator=(std::string const&);
 	DTCId& operator=(std::string&&);
 	
-	inline std::string name() const noexcept {return dtc_name_;}
-	inline std::size_t hash() const noexcept {return dtc_name_hash_;}
+	inline char const * name() const noexcept {return dtc_name_.c_str();}
+	inline std::size_t  hash() const noexcept {return dtc_name_hash_;}
 	
 	inline bool operator< (DTCId const& rhs) const noexcept {return dtc_name_hash_ <  rhs.dtc_name_hash_;}
 	inline bool operator> (DTCId const& rhs) const noexcept {return dtc_name_hash_ >  rhs.dtc_name_hash_;}
