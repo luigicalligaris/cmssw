@@ -89,7 +89,7 @@ void DTCCablingMapTestReader::analyze(const edm::Event& iEvent, const edm::Event
 	
 	
 	cout << "p_outerTrackerDTCCablingMap->cablingMapDetToDTC_ elements:" << endl;
-	for (auto map_it : p_outerTrackerDTCCablingMap->cablingMapDetToDTC_)
+	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDetToDTC_)
 	{
 		cout << "(" << map_it.first << "," << map_it.second.name() << "), ";
 	}
@@ -97,7 +97,7 @@ void DTCCablingMapTestReader::analyze(const edm::Event& iEvent, const edm::Event
 	
 	
 	cout << "p_outerTrackerDTCCablingMap->cablingMapDTCToDet_ elements:" << endl;
-	for (auto map_it : p_outerTrackerDTCCablingMap->cablingMapDTCToDet_)
+	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDTCToDet_)
 	{
 		cout << "(" << map_it.first.name() << "," << map_it.second << "), ";
 	}
