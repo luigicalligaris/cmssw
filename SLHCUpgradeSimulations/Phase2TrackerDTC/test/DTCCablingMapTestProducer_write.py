@@ -28,11 +28,12 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 
 process.otdtccablingmap_producer = cms.EDAnalyzer("DTCCablingMapTestProducer",
     record = cms.string('OuterTrackerDTCCablingMapRcd'),
-    loggingOn= cms.untracked.bool(True),
-    SinceAppendMode=cms.bool(True),
-    Source=cms.PSet(
-        IOVRun=cms.untracked.uint32(1)
-    )
+    #loggingOn= cms.untracked.bool(True),
+    #SinceAppendMode=cms.bool(True),
+    #Source=cms.PSet(
+        #IOVRun=cms.untracked.uint32(1)
+    #)
 )
 
 process.path = cms.Path(process.otdtccablingmap_producer)
+
