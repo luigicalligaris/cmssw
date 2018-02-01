@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("TestDTCCablingMapProducerRetrieve")
+process = cms.Process("DTCCablingMapProducerRetrieve")
 
 process.load("CondCore.CondDB.CondDB_cfi")
 # input database (in this case the local sqlite file)

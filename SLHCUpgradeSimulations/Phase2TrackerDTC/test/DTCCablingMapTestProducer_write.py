@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("TestDTCCablingMapProducerWrite")
+process = cms.Process("DTCCablingMapTestProducerWrite")
 
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")
@@ -22,11 +22,11 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     timetype = cms.untracked.string('runnumber'),
     toPut = cms.VPSet(cms.PSet(
         record = cms.string('OuterTrackerDTCCablingMapRcd'),
-        tag = cms.string('DTCCablingMapProducer_test')
+        tag = cms.string('DTCCablingMapTestProducer_test')
     ))
 )
 
-process.otdtccablingmap_producer = cms.EDAnalyzer("DTCCablingMapProducer",
+process.otdtccablingmap_producer = cms.EDAnalyzer("DTCCablingMapTestProducer",
     record = cms.string('OuterTrackerDTCCablingMapRcd'),
     loggingOn= cms.untracked.bool(True),
     SinceAppendMode=cms.bool(True),

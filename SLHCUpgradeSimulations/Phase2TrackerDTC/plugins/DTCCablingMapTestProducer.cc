@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
 // Package:    SLHCUpgradeSimulations/Phase2TrackerDTC
-// Class:      DTCCablingMapProducer
+// Class:      DTCCablingMapTestProducer
 // 
-/**\class DTCCablingMapProducer DTCCablingMapProducer.cc SLHCUpgradeSimulations/Phase2TrackerDTC/plugins/DTCCablingMapProducer.cc
+/**\class DTCCablingMapTestProducer DTCCablingMapTestProducer.cc SLHCUpgradeSimulations/Phase2TrackerDTC/plugins/DTCCablingMapTestProducer.cc
 
 Description: [one line class summary]
 
@@ -37,11 +37,11 @@ Implementation:
 #include "CondFormats/Phase2TrackerObjects/interface/DTCId.h"
 
 
-class DTCCablingMapProducer : public edm::one::EDAnalyzer<>
+class DTCCablingMapTestProducer : public edm::one::EDAnalyzer<>
 {
 	public:
-			explicit DTCCablingMapProducer(const edm::ParameterSet&);
-			~DTCCablingMapProducer();
+			explicit DTCCablingMapTestProducer(const edm::ParameterSet&);
+			~DTCCablingMapTestProducer();
 			
 			static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 			
@@ -54,7 +54,7 @@ class DTCCablingMapProducer : public edm::one::EDAnalyzer<>
 };
 
 
-void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
+void DTCCablingMapTestProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 {
 	//The following says we do not know what parameters are allowed so do no validation
 	// Please change this to state exactly what you do use, even if it is no parameters
@@ -63,19 +63,19 @@ void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& des
 	descriptions.addDefault(desc);
 }
 
-DTCCablingMapProducer::DTCCablingMapProducer(const edm::ParameterSet& iConfig)
+DTCCablingMapTestProducer::DTCCablingMapTestProducer(const edm::ParameterSet& iConfig)
 {
 	
 }
 
 
-DTCCablingMapProducer::~DTCCablingMapProducer()
+DTCCablingMapTestProducer::~DTCCablingMapTestProducer()
 {
 	
 }
 
 
-void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void DTCCablingMapTestProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	using namespace std;
@@ -103,16 +103,16 @@ void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSe
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void DTCCablingMapProducer::beginJob()
+void DTCCablingMapTestProducer::beginJob()
 {
 	
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void DTCCablingMapProducer::endJob() 
+void DTCCablingMapTestProducer::endJob() 
 {
 	
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(DTCCablingMapProducer);
+DEFINE_FWK_MODULE(DTCCablingMapTestProducer);
