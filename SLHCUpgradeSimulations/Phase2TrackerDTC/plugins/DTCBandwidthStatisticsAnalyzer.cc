@@ -18,6 +18,7 @@ Implementation:
 
 #include <memory>
 #include <utility>
+#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -108,10 +109,19 @@ class DTCBandwidthStatisticsAnalyzer : public edm::one::EDAnalyzer<edm::one::Sha
 		TFileDirectory tfs_dir_hardware_;
 		TFileDirectory tfs_dir_datarates_;
 		
+		std::unordered_map<DTCId, unsigned int>  max_nclusters_per_dtc_ ;
+		std::unordered_map<DTCId, unsigned int>  max_nhits_per_dtc_     ;
+		std::unordered_map<DTCId, unsigned int>  max_nstubs_per_dtc_    ;
+		
 		TH1F*     h1_nmodules_per_dtc_      ;
+		TH1F*     hmax1_nclusters_per_dtc_  ;
+		TH1F*     hmax1_nhits_per_dtc_      ;
+		TH1F*     hmax1_nstubs_per_dtc_     ;
 		TProfile* hprof1_nclusters_per_dtc_ ;
 		TProfile* hprof1_nhits_per_dtc_     ;
 		TProfile* hprof1_nstubs_per_dtc_    ;
+		
+		std::unordered_map<DTCId, unsigned int> dtcBinningMap_;
 		
 		edm::ESHandle<OuterTrackerDTCCablingMap> outerTrackerDTCCablingMapHandle_;
 		
@@ -191,10 +201,16 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		hprof1_nhits_per_dtc_      = tfs_dir_datarates_.make<TProfile>("hprof1_nhits_per_dtc"     ,"Number Of Average Hits per DTC;DTC identifier;N_{hits}"    , numDTCs, -0.5, -0.5+numDTCs);
 		hprof1_nstubs_per_dtc_     = tfs_dir_datarates_.make<TProfile>("hprof1_nstubs_per_dtc"    ,"Number Of Average Stubs per DTC;DTC identifier;N_{stubs}"   , numDTCs, -0.5, -0.5+numDTCs);
 		
+		hmax1_nclusters_per_dtc_   = tfs_dir_datarates_.make<TH1F>("hmax1_nclusters_per_dtc"      ,"Max Number Of Clusters per DTC;DTC identifier;N_{clusters}", numDTCs, -0.5, -0.5+numDTCs);
+		hmax1_nhits_per_dtc_       = tfs_dir_datarates_.make<TH1F>("hmax1_nhits_per_dtc"          ,"Max Number Of Hits per DTC;DTC identifier;N_{hits}"    , numDTCs, -0.5, -0.5+numDTCs);
+		hmax1_nstubs_per_dtc_      = tfs_dir_datarates_.make<TH1F>("hmax1_nstubs_per_dtc"         ,"Max Number Of Stubs per DTC;DTC identifier;N_{stubs}"   , numDTCs, -0.5, -0.5+numDTCs);
 		
 		hprof1_nclusters_per_dtc_->GetXaxis()->SetLabelSize(0.005);
 		hprof1_nhits_per_dtc_    ->GetXaxis()->SetLabelSize(0.005);
 		hprof1_nstubs_per_dtc_   ->GetXaxis()->SetLabelSize(0.005);
+		hmax1_nclusters_per_dtc_ ->GetXaxis()->SetLabelSize(0.005);
+		hmax1_nhits_per_dtc_     ->GetXaxis()->SetLabelSize(0.005);
+		hmax1_nstubs_per_dtc_    ->GetXaxis()->SetLabelSize(0.005);
 		h1_nmodules_per_dtc_     ->GetXaxis()->SetLabelSize(0.005);
 		
 		
@@ -208,11 +224,38 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		
 		
 		// Prepare bins in rate histograms
-		for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+		
+		std::vector<DTCId> sortedKnownDTCs(outerTrackerDTCCablingMapHandle_->knownDTCIds_.begin(),outerTrackerDTCCablingMapHandle_->knownDTCIds_.end());
+		std::sort(sortedKnownDTCs.begin(), sortedKnownDTCs.end(), [&](DTCId const& lhs,DTCId const& rhs)
+			{
+				std::string const lhs_name(lhs.name());
+				std::string const rhs_name(rhs.name());
+				
+				return std::lexicographical_compare(lhs_name.begin(), lhs_name.end(), rhs_name.begin(), rhs_name.end());
+			}
+		);
+		
+		
+ 		unsigned int iBin = 1;
+ 		for (auto const& dtc_ref : sortedKnownDTCs)
+ 		{
+ 			dtcBinningMap_.insert(std::make_pair<DTCId, unsigned int>(DTCId(dtc_ref), unsigned(iBin)));
+ 			++iBin;
+ 		}
+		
+		
+		for (auto const& dtc_ref : sortedKnownDTCs)
 		{
 			hprof1_nclusters_per_dtc_->Fill(dtc_ref.name(), 0.0);
 			hprof1_nhits_per_dtc_    ->Fill(dtc_ref.name(), 0.0);
 			hprof1_nstubs_per_dtc_   ->Fill(dtc_ref.name(), 0.0);
+			hmax1_nclusters_per_dtc_ ->Fill(dtc_ref.name(), 0.0);
+			hmax1_nhits_per_dtc_     ->Fill(dtc_ref.name(), 0.0);
+			hmax1_nstubs_per_dtc_    ->Fill(dtc_ref.name(), 0.0);
+			
+			max_nclusters_per_dtc_[dtc_ref] = 0;
+			max_nhits_per_dtc_    [dtc_ref] = 0;
+			max_nstubs_per_dtc_   [dtc_ref] = 0;
 		}
 	}
 	
@@ -228,15 +271,15 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 	}
 	
 	
-	for (auto const& hit: *hitsHandle)
+	for (auto const& hit_detset: *hitsHandle)
 	{
-		uint32_t const detId = hit.detId();
+		uint32_t const detId = hit_detset.detId();
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
 			DTCId const& hitDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
 // 			string const hitDTCName = hitDTC.name();
 			
-			++hitCounts[hitDTC];
+			hitCounts[hitDTC] += hit_detset.size();
 		}
 		else
 		{
@@ -244,15 +287,15 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		}
 	}
 	
-	for (auto const& clu: *clusHandle)
+	for (auto const& clu_detset: *clusHandle)
 	{
-		uint32_t const detId = clu.detId();
+		uint32_t const detId = clu_detset.detId();
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
 			DTCId const& cluDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
 // 			string const cluDTCName = cluDTC.name();
 			
-			++cluCounts[cluDTC];
+			cluCounts[cluDTC] += clu_detset.size();
 		}
 		else
 		{
@@ -260,15 +303,15 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		}
 	}
 	
-	for (auto const& stu: *stubHandle)
+	for (auto const& stu_detset: *stubHandle)
 	{
-		uint32_t const detId = stu.detId();
+		uint32_t const detId = stu_detset.detId();
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
-			DTCId const& cluDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
-			string const cluDTCName = cluDTC.name();
+			DTCId const& stuDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
+// 			string const stuDTCName = stuDTC.name();
 			
-			++stuCounts[cluDTC];
+			stuCounts[stuDTC] += stu_detset.size();
 		}
 		else
 		{
@@ -276,9 +319,15 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		}
 	}
 	
+	
+	
 	for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
 	{
-		hprof1_nhits_per_dtc_    ->Fill(dtc_ref.name(), double(hitCounts[dtc_ref]));
+		max_nclusters_per_dtc_[dtc_ref] = std::max(max_nclusters_per_dtc_[dtc_ref] , hitCounts[dtc_ref]);
+		max_nhits_per_dtc_    [dtc_ref] = std::max(max_nhits_per_dtc_    [dtc_ref] , cluCounts[dtc_ref]);
+		max_nstubs_per_dtc_   [dtc_ref] = std::max(max_nstubs_per_dtc_   [dtc_ref] , stuCounts[dtc_ref]);
+		
+		hprof1_nhits_per_dtc_    ->Fill(dtc_ref.name(), double(hitCounts[dtc_ref]) );
 		hprof1_nclusters_per_dtc_->Fill(dtc_ref.name(), double(cluCounts[dtc_ref]) );
 		hprof1_nstubs_per_dtc_   ->Fill(dtc_ref.name(), double(stuCounts[dtc_ref]) );
 	}
@@ -291,7 +340,16 @@ void DTCBandwidthStatisticsAnalyzer::endRun(edm::Run const& iRun, edm::EventSetu
 
 void DTCBandwidthStatisticsAnalyzer::endJob() 
 {
-	
+	for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+	{
+// 		hmax1_nclusters_per_dtc_ ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
+// 		hmax1_nhits_per_dtc_     ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
+// 		hmax1_nstubs_per_dtc_    ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
+		
+		hmax1_nclusters_per_dtc_ ->Fill(dtc_ref.name(), max_nclusters_per_dtc_[dtc_ref]);
+		hmax1_nhits_per_dtc_     ->Fill(dtc_ref.name(), max_nhits_per_dtc_    [dtc_ref]);
+		hmax1_nstubs_per_dtc_    ->Fill(dtc_ref.name(), max_nstubs_per_dtc_   [dtc_ref]);
+	}
 }
 
 DTCBandwidthStatisticsAnalyzer::~DTCBandwidthStatisticsAnalyzer()
