@@ -88,16 +88,16 @@ void DTCCablingMapTestReader::analyze(const edm::Event& iEvent, const edm::Event
 	OuterTrackerDTCCablingMap const* p_outerTrackerDTCCablingMap = outerTrackerDTCCablingMapHandle.product();
 	
 	
-	cout << "p_outerTrackerDTCCablingMap->cablingMapDetToDTC_ elements:" << endl;
-	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDetToDTC_)
+	cout << "Det To DTC elements:" << endl;
+	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDetIdToDTCIdIndex_)
 	{
-		cout << "(" << map_it.first << "," << map_it.second.name() << "), ";
+		cout << "(" << map_it.first << "," << p_outerTrackerDTCCablingMap->knownDTCIds_[map_it.second].name() << "), ";
 	}
 	cout << endl;
 	
 	
-	cout << "p_outerTrackerDTCCablingMap->cablingMapDTCToDet_ elements:" << endl;
-	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDTCToDet_)
+	cout << "DTC To Det elements:" << endl;
+	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDTCIdToDetId_)
 	{
 		cout << "(" << map_it.first.name() << "," << map_it.second << "), ";
 	}

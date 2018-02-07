@@ -79,15 +79,10 @@ void DTCCablingMapTestProducer::beginJob()
 	
 	OuterTrackerDTCCablingMap* pOuterTrackerDTCCablingMap_ = new OuterTrackerDTCCablingMap();
 	
-	pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(make_pair<uint32_t, DTCId>(11111111, DTCId("2_2S_1")));
-	pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(make_pair<uint32_t, DTCId>(22222222, DTCId("2_2S_2")));
-	pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(make_pair<uint32_t, DTCId>(33333333, DTCId("2_2S_3")));
-	pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(make_pair<uint32_t, DTCId>(44444444, DTCId("2_2S_3")));
-	
-	pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(make_pair<DTCId, uint32_t>(DTCId("2_2S_1"), 11111111));
-	pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(make_pair<DTCId, uint32_t>(DTCId("2_2S_2"), 22222222));
-	pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(make_pair<DTCId, uint32_t>(DTCId("2_2S_3"), 33333333));
-	pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(make_pair<DTCId, uint32_t>(DTCId("2_2S_3"), 44444444));
+	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_1"), 11111111);
+	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_2"), 22222222);
+	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_3"), 33333333);
+	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_3"), 44444444);
 	
 	edm::Service<cond::service::PoolDBOutputService> poolDbService;
 	

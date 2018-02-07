@@ -18,18 +18,20 @@ Implementation:
 
 #include <memory>
 #include <cstdint>
+#include <atomic>
 #include <unordered_map>
 #include <utility>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-
 
 #include "CondCore/DBOutputService/interface/PoolDBOutputService.h"
 #include "CondFormats/Phase2TrackerObjects/interface/OuterTrackerDTCCablingMap.h"
@@ -37,6 +39,13 @@ Implementation:
 #include "CondFormats/Common/interface/Time.h"
 
 #include "CondFormats/Phase2TrackerObjects/interface/DTCId.h"
+
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+#include "Geometry/Records/interface/TrackerTopologyRcd.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
+#include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
 
 
 
@@ -137,20 +146,7 @@ DTCCablingMapProducer::DTCCablingMapProducer(const edm::ParameterSet& iConfig):
 
 void DTCCablingMapProducer::beginJob()
 {
-	using namespace edm;
-	using namespace std;
 	
-	edm::Service<cond::service::PoolDBOutputService> poolDbService;
-	
-	if( poolDbService.isAvailable() )
-	{
-// 		poolDbService->writeOne( pOuterTrackerDTCCablingMap_, poolDbService->currentTime(), "OuterTrackerDTCCablingMapRcd" );
-		poolDbService->writeOne( pOuterTrackerDTCCablingMap_, iovBeginTime_, record_ );
-	}
-	else
-	{
-		throw cms::Exception("PoolDBService required.");
-	}
 }
 
 void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
@@ -233,16 +229,13 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 				}
 				
 				{
-					auto cablingMapDetToDTCRef = pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_;
-					
-					if (cablingMapDetToDTCRef.find(detIdRaw) != cablingMapDetToDTCRef.end())
+					if (pOuterTrackerDTCCablingMap_->knowsDetId(detIdRaw))
 					{
 						throw cms::Exception("Reading CSV file: CRITICAL ERROR, duplicated DetId entry about DetId = ") << detIdRaw << endl;
 					}
 				}
 				
-				pOuterTrackerDTCCablingMap_->cablingMapDetToDTC_.insert(std::make_pair<uint32_t, DTCId>(uint32_t(detIdRaw), DTCId(dtcId)) );
-				pOuterTrackerDTCCablingMap_->cablingMapDTCToDet_.insert(std::make_pair<DTCId, uint32_t>(DTCId(dtcId), uint32_t(detIdRaw)) );
+				pOuterTrackerDTCCablingMap_->insert(dtcId, detIdRaw);
 			}
 			else
 			{
@@ -264,12 +257,75 @@ void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
 
 void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+	using namespace edm;
+	using namespace std;
 	
+	bool firstEvent = true;
+	
+	if (firstEvent)
+	{
+		firstEvent = false;
+		
+		edm::ESHandle<TrackerGeometry> trackerGeometryHandle;
+		edm::ESHandle<TrackerTopology> trackerTopologyHandle;
+		
+		iSetup.get<TrackerDigiGeometryRecord>().get(trackerGeometryHandle);
+		iSetup.get<TrackerTopologyRcd       >().get(trackerTopologyHandle);
+		
+		
+		// Get list of all silicon modules in tracker and select the ones in the OT.
+		// As the XML DTC cabling map is in terms of DetId of module stacks, get from 
+		// geometry all the modules, and associate them to DTCs through their stack DetId 
+		// in the already loaded cabling map.
+		
+		for (const GeomDet* gd : trackerGeometryHandle->dets())
+		{
+			DetId const detId = gd->geographicalId();
+			
+			// Phase 2 Outer Tracker uses TOB code for entire barrel and TID code for entire endcap.
+			if (detId.subdetId() != StripSubdetector::TOB && detId.subdetId() != StripSubdetector::TID)
+				continue;
+			
+			DetId const stackId = trackerTopologyHandle->stack(detId);
+			
+			// While I could not find documentation on that, these values seems to be invalid
+			if (stackId.null())
+				continue;
+			
+			uint32_t const rawDetId  (detId  );
+			uint32_t const rawStackId(stackId);
+			
+			if (pOuterTrackerDTCCablingMap_->knowsDetId(rawStackId))
+			{
+				
+				DTCId const & dtcId = pOuterTrackerDTCCablingMap_->detIdToDTC(rawStackId);
+				
+				pOuterTrackerDTCCablingMap_->insert(dtcId, rawDetId);
+			}
+			else
+			{
+				cout << "Warning: the OuterTrackerDTCCablingMap does not know stack detId " << rawStackId << endl;
+			}
+		}
+	}
 }
 
 void DTCCablingMapProducer::endJob() 
 {
+	using namespace edm;
+	using namespace std;
 	
+	edm::Service<cond::service::PoolDBOutputService> poolDbService;
+	
+	if( poolDbService.isAvailable() )
+	{
+// 		poolDbService->writeOne( pOuterTrackerDTCCablingMap_, poolDbService->currentTime(), "OuterTrackerDTCCablingMapRcd" );
+		poolDbService->writeOne( pOuterTrackerDTCCablingMap_, iovBeginTime_, record_ );
+	}
+	else
+	{
+		throw cms::Exception("PoolDBService required.");
+	}
 }
 
 DTCCablingMapProducer::~DTCCablingMapProducer()
