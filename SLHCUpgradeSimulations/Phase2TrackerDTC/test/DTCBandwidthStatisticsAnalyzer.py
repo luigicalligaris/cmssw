@@ -4,6 +4,8 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("DTCBandwidthStatisticsAnalyzerDEMO")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport  = cms.untracked.PSet( reportEvery  = cms.untracked.int32(10), )
+
 process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')
 
 
@@ -25,12 +27,14 @@ process.source = cms.Source("PoolSource",
 	fileNames = cms.untracked.vstring(
 		#'file:output_0.root',
 		#'root://cmsxrootd.fnal.gov/',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/003EF948-9F7E-E711-8EC9-24BE05C6E571.root',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/00C9BA0B-9F7E-E711-9269-5065F3815221.root',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/02C15900-A37E-E711-AEEC-5065F3815241.root',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/049FB523-9E7E-E711-9D5F-5065F381F2D2.root',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/06423504-A37E-E711-8D7D-E0071B7A18F0.root',
-		'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/08BA86FA-9F7E-E711-886C-24BE05CECDD1.root'
+		
+		'file:003EF948-9F7E-E711-8EC9-24BE05C6E571.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/003EF948-9F7E-E711-8EC9-24BE05C6E571.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/00C9BA0B-9F7E-E711-9269-5065F3815221.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/02C15900-A37E-E711-AEEC-5065F3815241.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/049FB523-9E7E-E711-9D5F-5065F381F2D2.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/06423504-A37E-E711-8D7D-E0071B7A18F0.root',
+		#'/store/relval/CMSSW_9_3_0_pre3/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU25ns_92X_upgrade2023_realistic_v2_D17PU200-v2/00000/08BA86FA-9F7E-E711-886C-24BE05CECDD1.root'
 		)
 	)
 

@@ -42,6 +42,8 @@ Implementation:
 #include "DataFormats/Phase2TrackerCluster/interface/Phase2TrackerCluster1D.h"
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+#include "DataFormats/SiStripDetId/interface/TIDDetId.h"
+#include "DataFormats/SiStripDetId/interface/TOBDetId.h"
 
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/Records/interface/TrackerTopologyRcd.h"
@@ -56,6 +58,7 @@ Implementation:
 #include "CondFormats/Phase2TrackerObjects/interface/DTCId.h"
 
 #include "TH1.h"
+#include "TH2.h"
 #include "TProfile.h"
 #include "TDirectory.h"
 #include "TDirectoryFile.h"
@@ -113,13 +116,16 @@ class DTCBandwidthStatisticsAnalyzer : public edm::one::EDAnalyzer<edm::one::Sha
 		std::unordered_map<DTCId, unsigned int>  max_nhits_per_dtc_     ;
 		std::unordered_map<DTCId, unsigned int>  max_nstubs_per_dtc_    ;
 		
-		TH1F*     h1_nmodules_per_dtc_      ;
-		TH1F*     hmax1_nclusters_per_dtc_  ;
-		TH1F*     hmax1_nhits_per_dtc_      ;
-		TH1F*     hmax1_nstubs_per_dtc_     ;
-		TProfile* hprof1_nclusters_per_dtc_ ;
-		TProfile* hprof1_nhits_per_dtc_     ;
-		TProfile* hprof1_nstubs_per_dtc_    ;
+		TH1F*     h1_nmodules_per_dtc_                       ;
+		TH2F*     h2_totclusters_per_disk_vs_ring_in_tid_    ;
+		TH2F*     h2_tothitss_per_disk_vs_ring_in_tid_       ;
+		TH2F*     h2_totstubss_per_disk_vs_ring_in_tid_      ;
+		TH1F*     hmax1_nclusters_per_dtc_                   ;
+		TH1F*     hmax1_nhits_per_dtc_                       ;
+		TH1F*     hmax1_nstubs_per_dtc_                      ;
+		TProfile* hprof1_nclusters_per_dtc_                  ;
+		TProfile* hprof1_nhits_per_dtc_                      ;
+		TProfile* hprof1_nstubs_per_dtc_                     ;
 		
 		std::unordered_map<DTCId, unsigned int> dtcBinningMap_;
 		
@@ -195,6 +201,9 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		// Instantiate the histograms
 		tfs_dir_hardware_ = fs_->mkdir("Hardware");
 		h1_nmodules_per_dtc_ = tfs_dir_hardware_.make<TH1F>    ("h1_nmodules_per_dtc"      ,"Number Of Modules per DTC;DTC identifier;N_{modules}"         , numDTCs, -0.5, -0.5+numDTCs);
+		h2_totclusters_per_disk_vs_ring_in_tid_ = tfs_dir_hardware_.make<TH2F> ("h2_totclusters_per_disk_vs_ring_in_tid","Tot number of clusters;Disk;Ring",30,-0.5-15,-0.5+15,30,-0.5-15,-0.5+15);
+		h2_tothitss_per_disk_vs_ring_in_tid_    = tfs_dir_hardware_.make<TH2F> ("h2_tothitss_per_disk_vs_ring_in_tid"   ,"Tot number of hits;Disk;Ring"    ,30,-0.5-15,-0.5+15,30,-0.5-15,-0.5+15);
+		h2_totstubss_per_disk_vs_ring_in_tid_   = tfs_dir_hardware_.make<TH2F> ("h2_totstubss_per_disk_vs_ring_in_tid"  ,"Tot number of stubs;Disk;Ring"   ,30,-0.5-15,-0.5+15,30,-0.5-15,-0.5+15);
 		
 		tfs_dir_datarates_ = fs_->mkdir("DataRates");
 		hprof1_nclusters_per_dtc_  = tfs_dir_datarates_.make<TProfile>("hprof1_nclusters_per_dtc" ,"Number Of Average Clusters per DTC;DTC identifier;N_{clusters}", numDTCs, -0.5, -0.5+numDTCs);
@@ -273,11 +282,59 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 	
 	for (auto const& hit_detset: *hitsHandle)
 	{
-		uint32_t const detId = hit_detset.detId();
+		DetId detidObject( hit_detset.detId() );
+		uint32_t const detId = detidObject;
+		
+		// Phase 2 Outer Tracker uses TOB code for entire barrel and TID code for entire endcap.
+		if (detidObject.subdetId() == StripSubdetector::TOB)
+		{
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else if (detidObject.subdetId() == StripSubdetector::TID)
+		{
+			TIDDetId tidDetIdObject(detidObject);
+			
+			int diskNum  = tidDetIdObject.diskNumber();
+			int ringNum  = tidDetIdObject.ring();
+			
+			switch (tidDetIdObject.side())
+			{
+				case 1:
+					diskNum *= -1;
+					ringNum *= -1;
+					break;
+				case 2:
+					diskNum *=  1;
+					ringNum *=  1;
+					break;
+				default:
+					break;
+			}
+			
+			switch (tidDetIdObject.order())
+			{
+				case 1:
+					ringNum *= -1;
+					break;
+				default:
+					ringNum *=  1;
+					break;
+			}
+			
+			h2_tothitss_per_disk_vs_ring_in_tid_->Fill(diskNum,ringNum,hit_detset.size());
+			
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else
+		{
+			cout << "hit DetId = " << detId << " ---> NOT IN PHASE 2 OUTER TRACKER!" << endl;
+			continue;
+		}
+		
+		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
 			DTCId const& hitDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
-// 			string const hitDTCName = hitDTC.name();
 			
 			hitCounts[hitDTC] += hit_detset.size();
 		}
@@ -287,13 +344,62 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		}
 	}
 	
+	
 	for (auto const& clu_detset: *clusHandle)
 	{
-		uint32_t const detId = clu_detset.detId();
+		DetId detidObject( clu_detset.detId() );
+		uint32_t const detId = detidObject;
+		
+		// Phase 2 Outer Tracker uses TOB code for entire barrel and TID code for entire endcap.
+		if (detidObject.subdetId() == StripSubdetector::TOB)
+		{
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else if (detidObject.subdetId() == StripSubdetector::TID)
+		{
+			TIDDetId tidDetIdObject(detidObject);
+			
+			int diskNum  = tidDetIdObject.diskNumber();
+			int ringNum  = tidDetIdObject.ring();
+			
+			switch (tidDetIdObject.side())
+			{
+				case 1:
+					diskNum *= -1;
+					ringNum *= -1;
+					break;
+				case 2:
+					diskNum *=  1;
+					ringNum *=  1;
+					break;
+				default:
+					break;
+			}
+			
+			switch (tidDetIdObject.order())
+			{
+				case 1:
+					ringNum *= -1;
+					break;
+				default:
+					ringNum *=  1;
+					break;
+			}
+			
+			h2_totclusters_per_disk_vs_ring_in_tid_->Fill(diskNum,ringNum,clu_detset.size());
+			
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else
+		{
+			cout << "cluster DetId = " << detId << " ---> NOT IN PHASE 2 OUTER TRACKER!" << endl;
+			continue;
+		}
+		
+		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
 			DTCId const& cluDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
-// 			string const cluDTCName = cluDTC.name();
 			
 			cluCounts[cluDTC] += clu_detset.size();
 		}
@@ -303,13 +409,76 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		}
 	}
 	
+	
 	for (auto const& stu_detset: *stubHandle)
 	{
-		uint32_t const detId = stu_detset.detId();
+		DetId detidObject( stu_detset.detId() );
+		uint32_t const detId = detidObject;
+		
+		// Phase 2 Outer Tracker uses TOB code for entire barrel and TID code for entire endcap.
+		if (detidObject.subdetId() == StripSubdetector::TOB)
+		{
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else if (detidObject.subdetId() == StripSubdetector::TID)
+		{
+			TIDDetId tidDetIdObject(detidObject);
+			
+			int diskNum  = tidDetIdObject.diskNumber();
+			int ringNum  = tidDetIdObject.ring();
+			
+			switch (tidDetIdObject.side())
+			{
+				case 1:
+					diskNum *= -1;
+					ringNum *= -1;
+					break;
+				case 2:
+					diskNum *=  1;
+					ringNum *=  1;
+					break;
+				default:
+					break;
+			}
+			
+			switch (tidDetIdObject.order())
+			{
+				case 1:
+					ringNum *= -1;
+					break;
+				default:
+					ringNum *=  1;
+					break;
+			}
+			
+			// Ignore stubs in Disk 2 Ring 1, Disk 4 Ring 4-5, Disk 5 Ring 4-6
+			// https://indico.cern.ch/event/651638/contributions/2664172/attachments/1494597/2324969
+			
+// 			cout << "diskNum = " << diskNum << " ringNum = " << ringNum << endl;
+			
+			h2_totstubss_per_disk_vs_ring_in_tid_->Fill(diskNum,ringNum,stu_detset.size());
+			
+			if ( (2 == diskNum && (1 == ringNum) ) 
+				|| (4 == diskNum && (4 == ringNum || 5 == ringNum) ) 
+				|| (5 == diskNum && (4 == ringNum || 5 == ringNum || 6 == ringNum) ) 
+			)
+			{
+				cout << "stub DetId = " << detId << " ---> IN ENDCAP RINGS EXCLUDED FROM L1TF STREAM!" << endl;
+				continue;
+			}
+			
+			((void)0); //NOP, to keep the if in place if nothing is done above
+		}
+		else
+		{
+			cout << "stub DetId = " << detId << " ---> NOT IN PHASE 2 OUTER TRACKER!" << endl;
+			continue;
+		}
+		
+		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
 			DTCId const& stuDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
-// 			string const stuDTCName = stuDTC.name();
 			
 			stuCounts[stuDTC] += stu_detset.size();
 		}
