@@ -1,0 +1,11 @@
+<lcgdict>
+	<class name="OuterTrackerDTCCablingMap" class_version="0">
+		<field name="knownDTCIds_"            mapping="blob" />
+		<field name="cablingMapDetIdToDTCIdIndex_" mapping="blob" />
+		<field name="cablingMapDTCIdToDetId_" mapping="blob" />
+	</class>
+	<class name="DTCId" class_version="0">
+<!-- 		<field name="detToDTCMap_" mapping="blob" /> -->
+	</class>
+</lcgdict>
+
