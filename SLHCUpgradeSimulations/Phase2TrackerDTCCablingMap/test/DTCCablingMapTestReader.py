@@ -6,7 +6,7 @@ process = cms.Process("TestDTCCablingMapReaderDEMO")
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # input database (in this case the local sqlite file)
-process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap.db'
+process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap_dummytest.db'
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     process.CondDB,

@@ -6,7 +6,7 @@ process = cms.Process("DTCCablingMapTestProducerWriteDEMO")
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # output database (in this case local sqlite file)
-process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap.db'
+process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap_dummytest.db'
 
 # A data source must always be defined. We don't need it, so here's a dummy one.
 process.source = cms.Source("EmptyIOVSource",
@@ -22,7 +22,7 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     timetype = cms.untracked.string('runnumber'),
     toPut = cms.VPSet(cms.PSet(
         record = cms.string('OuterTrackerDTCCablingMapRcd'),
-        tag = cms.string('DTCCablingTest')
+        tag = cms.string('DTCCablingMapProducer_test')
     ))
 )
 
