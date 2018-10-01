@@ -24,7 +24,7 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     timetype = cms.untracked.string('runnumber'),
     toPut = cms.VPSet(cms.PSet(
         record = cms.string('OuterTrackerDTCCablingMapRcd'),
-        tag = cms.string('DTCCablingTest')
+        tag = cms.string('DTCCablingMapProducerUserRun')
     ))
 )
 

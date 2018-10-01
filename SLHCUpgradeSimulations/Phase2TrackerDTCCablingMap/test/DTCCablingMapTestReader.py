@@ -5,15 +5,16 @@ process = cms.Process("TestDTCCablingMapReaderDEMO")
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")
 
-# input database (in this case the local sqlite file)
+# input database (in this case the local sqlite files)
 process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap_dummytest.db'
+#process.CondDB.connect = 'sqlite_file:OuterTrackerDTCCablingMap.db'
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     process.CondDB,
     DumpStat=cms.untracked.bool(True),
     toGet = cms.VPSet(cms.PSet(
         record = cms.string('OuterTrackerDTCCablingMapRcd'),
-        tag = cms.string("DTCCablingMapProducer_test")
+        tag = cms.string("DTCCablingMapProducerUserRun")
     )),
 )
 
