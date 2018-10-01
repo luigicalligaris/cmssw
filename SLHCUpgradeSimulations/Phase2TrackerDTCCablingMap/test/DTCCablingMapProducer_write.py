@@ -30,7 +30,7 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 
 process.otdtccablingmap_producer = cms.EDAnalyzer("DTCCablingMapProducer",
     record = cms.string('OuterTrackerDTCCablingMapRcd'),
-    inputCablingFileName = cms.FileInPath("SLHCUpgradeSimulations/Phase2TrackerDTCCablingMap/data/ModulesToDTCsT5_v4.csv"),
+    modulesToDTCCablingCSVFileNames = cms.vstring("SLHCUpgradeSimulations/Phase2TrackerDTCCablingMap/data/ModulesToDTCsT5_v4.csv"),
     verbosity = cms.int32(0),
     #loggingOn= cms.untracked.bool(True),
     #SinceAppendMode=cms.bool(True),

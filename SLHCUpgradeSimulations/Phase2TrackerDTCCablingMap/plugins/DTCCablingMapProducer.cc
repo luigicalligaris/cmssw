@@ -114,7 +114,7 @@ class DTCCablingMapProducer : public edm::one::EDAnalyzer<>
 		virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
 		virtual void endJob() override;
 		
-		virtual void LoadCablingMapFromCSV(char const* csvFilePath);
+		virtual void LoadModulesToDTCCablingMapFromCSV(std::vector<std::string> const&);
 		
 	private:
 		int          verbosity_;
@@ -131,7 +131,7 @@ void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& des
   desc.add<int>("verbosity", 0);
   desc.add<long long unsigned int>("iovBeginTime", 1);
   desc.add<std::string>("record","OuterTrackerDTCCablingMapRcd");
-  desc.add<edm::FileInPath>("inputCablingFileName",edm::FileInPath());
+	desc.add<std::vector<std::string>>("modulesToDTCCablingCSVFileNames",std::vector<std::string>());
 	descriptions.addDefault(desc);
 }
 
@@ -141,7 +141,7 @@ DTCCablingMapProducer::DTCCablingMapProducer(const edm::ParameterSet& iConfig):
 	record_  (iConfig.getParameter<std::string>("record")),
 	pOuterTrackerDTCCablingMap_(new OuterTrackerDTCCablingMap())
 {
-	LoadCablingMapFromCSV(iConfig.getParameter<edm::FileInPath>("inputCablingFileName").fullPath().c_str());
+	LoadModulesToDTCCablingMapFromCSV(iConfig.getParameter<std::vector<std::string>>("modulesToDTCCablingCSVFileNames"));
 }
 
 void DTCCablingMapProducer::beginJob()
@@ -149,110 +149,117 @@ void DTCCablingMapProducer::beginJob()
 	
 }
 
-void DTCCablingMapProducer::LoadCablingMapFromCSV(char const* csvFilePath)
+void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::string> const& modulesToDTCCablingCSVFileNames)
 {
+// 	std::vector<std::string>
+// 	edm::FileInPath
+// 	iConfig.getParameter<edm::FileInPath>("inputCablingFileName").fullPath().c_str()
+	
 	using namespace std;
 	
-	ifstream csvFile;
-	csvFile.open(csvFilePath);
-	
-	if (csvFile.is_open())
+	for (std::string const& csvFileName : modulesToDTCCablingCSVFileNames)
 	{
+		edm::FileInPath csvFilePath(csvFileName);
 		
-		string csvLine;
+		ifstream csvFile;
+		csvFile.open(csvFilePath.fullPath().c_str());
 		
-		unsigned lineNumber = 0;
-		
-		while (std::getline(csvFile, csvLine))
+		if (csvFile.is_open())
 		{
-			if (verbosity_ >= 1)
+			string csvLine;
+			
+			unsigned lineNumber = 0;
+			
+			while (std::getline(csvFile, csvLine))
 			{
-				cout << "Reading CSV file line: " << ++lineNumber << ": \"" << csvLine << "\"" << endl;
-			}
-			
-			istringstream csvStream(csvLine);
-			vector<string> csvColumn;
-			string csvElement;
-			
-			while (std::getline(csvStream, csvElement, ','))
-			{
-				trim(csvElement);
-				csvColumn.push_back(csvElement);
-			}
-			
-			constexpr const unsigned int csvFormat_ncolumns = 14;
-			constexpr const unsigned int csvFormat_idetid   =  0;
-			constexpr const unsigned int csvFormat_idtcid   =  9;
-			
-			if (verbosity_ >= 2)
-			{
-				cout << "-- split line is: [";
-				
-				for (string const& s : csvColumn)
-					cout << "\"" << s << "\", ";
-				
-				cout << "]" << endl;
-			}
-			
-			if (csvColumn.size() == csvFormat_ncolumns)
-			{
-				// Skip the legend lines
-				if (0 == csvColumn[0].compare(std::string("Module DetId/U")))
+				if (verbosity_ >= 1)
 				{
-					if (verbosity_ >= 1)
+					cout << "Reading CSV file line: " << ++lineNumber << ": \"" << csvLine << "\"" << endl;
+				}
+				
+				istringstream csvStream(csvLine);
+				vector<string> csvColumn;
+				string csvElement;
+				
+				while (std::getline(csvStream, csvElement, ','))
+				{
+					trim(csvElement);
+					csvColumn.push_back(csvElement);
+				}
+				
+				constexpr const unsigned int csvFormat_ncolumns = 14;
+				constexpr const unsigned int csvFormat_idetid   =  0;
+				constexpr const unsigned int csvFormat_idtcid   =  9;
+				
+				if (verbosity_ >= 2)
+				{
+					cout << "-- split line is: [";
+					
+					for (string const& s : csvColumn)
+						cout << "\"" << s << "\", ";
+					
+					cout << "]" << endl;
+				}
+				
+				if (csvColumn.size() == csvFormat_ncolumns)
+				{
+					// Skip the legend lines
+					if (0 == csvColumn[0].compare(std::string("Module DetId/U")))
 					{
-						cout << "-- skipping as it is a legend line" << endl;
+						if (verbosity_ >= 1)
+						{
+							cout << "-- skipping as it is a legend line" << endl;
+						}
+						continue;
 					}
-					continue;
-				}
-				
-				uint32_t detIdRaw;
-				
-				try
-				{
-					detIdRaw = std::stoi( csvColumn[csvFormat_idetid] );
-				}
-				catch (std::exception e)
-				{
-					if (verbosity_ >= 0)
+					
+					uint32_t detIdRaw;
+					
+					try
 					{
-						cout << "-- malformed DetId string in CSV file: \"" << csvLine << "\"" << endl;
+						detIdRaw = std::stoi( csvColumn[csvFormat_idetid] );
 					}
-					throw e;
-				}
-				
-				DTCId dtcId( csvColumn[csvFormat_idtcid] );
-				
-				if (verbosity_ >= 3)
-				{
-					cout << "-- DetId = " << detIdRaw << " dtcId = " << dtcId.name() << endl;
-				}
-				
-				{
-					if (pOuterTrackerDTCCablingMap_->knowsDetId(detIdRaw))
+					catch (std::exception e)
 					{
-						throw cms::Exception("Reading CSV file: CRITICAL ERROR, duplicated DetId entry about DetId = ") << detIdRaw << endl;
+						if (verbosity_ >= 0)
+						{
+							cout << "-- malformed DetId string in CSV file: \"" << csvLine << "\"" << endl;
+						}
+						throw e;
 					}
+					
+					DTCId dtcId( csvColumn[csvFormat_idtcid] );
+					
+					if (verbosity_ >= 3)
+					{
+						cout << "-- DetId = " << detIdRaw << " dtcId = " << dtcId.name() << endl;
+					}
+					
+					{
+						if (pOuterTrackerDTCCablingMap_->knowsDetId(detIdRaw))
+						{
+							throw cms::Exception("Reading CSV file: CRITICAL ERROR, duplicated DetId entry about DetId = ") << detIdRaw << endl;
+						}
+					}
+					
+					pOuterTrackerDTCCablingMap_->insert(dtcId, detIdRaw);
 				}
-				
-				pOuterTrackerDTCCablingMap_->insert(dtcId, detIdRaw);
-			}
-			else
-			{
-				if (verbosity_ >= 3)
+				else
 				{
-					cout << "Reading CSV file: Skipped a short line: \"" << csvLine << "\"" << endl;
+					if (verbosity_ >= 3)
+					{
+						cout << "Reading CSV file: Skipped a short line: \"" << csvLine << "\"" << endl;
+					}
 				}
 			}
 		}
+		else
+		{
+			throw cms::Exception("DTCCablingMapESProducer: Unable to open input CSV file") << csvFilePath << endl;
+		}
+		
+		csvFile.close();
 	}
-	else
-	{
-		throw cms::Exception("DTCCablingMapESProducer: Unable to open input CSV file") << csvFilePath << endl;
-	}
-	
-	csvFile.close();
-	
 }
 
 void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
