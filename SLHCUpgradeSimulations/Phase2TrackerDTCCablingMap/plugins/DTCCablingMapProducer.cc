@@ -118,6 +118,9 @@ class DTCCablingMapProducer : public edm::one::EDAnalyzer<>
 		
 	private:
 		int          verbosity_;
+		unsigned     csvFormat_ncolumns_;
+		unsigned     csvFormat_idetid_  ;
+		unsigned     csvFormat_idtcid_  ;
 		cond::Time_t iovBeginTime_;
 		std::string  record_;
 		OuterTrackerDTCCablingMap* pOuterTrackerDTCCablingMap_;
@@ -128,7 +131,10 @@ void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& des
 {
 	edm::ParameterSetDescription desc;
 	desc.setComment("Stores a OuterTrackerDTCCablingMap database object from a CSV file.");
-  desc.add<int>("verbosity", 0);
+	desc.add<int>("verbosity", 0);
+	desc.add<unsigned>("csvFormat_ncolumns", 15);
+	desc.add<unsigned>("csvFormat_idetid"  ,  0);
+	desc.add<unsigned>("csvFormat_idtcid"  , 10);
   desc.add<long long unsigned int>("iovBeginTime", 1);
   desc.add<std::string>("record","OuterTrackerDTCCablingMapRcd");
 	desc.add<std::vector<std::string>>("modulesToDTCCablingCSVFileNames",std::vector<std::string>());
@@ -136,9 +142,12 @@ void DTCCablingMapProducer::fillDescriptions(edm::ConfigurationDescriptions& des
 }
 
 DTCCablingMapProducer::DTCCablingMapProducer(const edm::ParameterSet& iConfig):
-	verbosity_   (iConfig.getParameter<int>("verbosity")),
-	iovBeginTime_(iConfig.getParameter<long long unsigned int>("iovBeginTime")),
-	record_  (iConfig.getParameter<std::string>("record")),
+	verbosity_          (iConfig.getParameter<int>("verbosity")),
+	csvFormat_ncolumns_ (iConfig.getParameter<unsigned>("csvFormat_ncolumns")),
+	csvFormat_idetid_   (iConfig.getParameter<unsigned>("csvFormat_idetid"  )),
+	csvFormat_idtcid_   (iConfig.getParameter<unsigned>("csvFormat_idtcid"  )),
+	iovBeginTime_       (iConfig.getParameter<long long unsigned int>("iovBeginTime")),
+	record_             (iConfig.getParameter<std::string>("record")),
 	pOuterTrackerDTCCablingMap_(new OuterTrackerDTCCablingMap())
 {
 	LoadModulesToDTCCablingMapFromCSV(iConfig.getParameter<std::vector<std::string>>("modulesToDTCCablingCSVFileNames"));
@@ -187,10 +196,6 @@ void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::s
 					csvColumn.push_back(csvElement);
 				}
 				
-				constexpr const unsigned int csvFormat_ncolumns = 14;
-				constexpr const unsigned int csvFormat_idetid   =  0;
-				constexpr const unsigned int csvFormat_idtcid   =  9;
-				
 				if (verbosity_ >= 2)
 				{
 					cout << "-- split line is: [";
@@ -201,7 +206,7 @@ void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::s
 					cout << "]" << endl;
 				}
 				
-				if (csvColumn.size() == csvFormat_ncolumns)
+				if (csvColumn.size() == csvFormat_ncolumns_)
 				{
 					// Skip the legend lines
 					if (0 == csvColumn[0].compare(std::string("Module DetId/U")))
@@ -217,7 +222,7 @@ void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::s
 					
 					try
 					{
-						detIdRaw = std::stoi( csvColumn[csvFormat_idetid] );
+						detIdRaw = std::stoi( csvColumn[csvFormat_idetid_] );
 					}
 					catch (std::exception e)
 					{
@@ -228,7 +233,7 @@ void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::s
 						throw e;
 					}
 					
-					DTCId dtcId( csvColumn[csvFormat_idtcid] );
+					DTCId dtcId( csvColumn[csvFormat_idtcid_] );
 					
 					if (verbosity_ >= 3)
 					{
