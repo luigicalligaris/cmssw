@@ -316,7 +316,7 @@ void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSe
 			}
 			else
 			{
-				cout << "Warning: the OuterTrackerDTCCablingMap does not know stack detId " << rawStackId << endl;
+				cerr << "Warning: the OuterTrackerDTCCablingMap does not know stack detId " << rawStackId << ", check if the cabling map has been loaded correctly " << rawStackId << endl;
 			}
 		}
 	}
