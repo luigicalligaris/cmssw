@@ -31,20 +31,27 @@ class OuterTrackerDTCCablingMap
 		virtual ~OuterTrackerDTCCablingMap();
 		
 		std::pair<std::unordered_multimap<DTCId, uint32_t>::const_iterator, std::unordered_multimap<DTCId, uint32_t>::const_iterator> 
-			dtcToDetId(DTCId const&) const;
+			dtcIdToDetId(DTCId const) const;
 		
-		DTCId const& detIdToDTC(uint32_t) const;
+		DTCId detIdToDTCId(uint32_t) const;
 		
 		bool knowsDTCId(DTCId const&) const;
 		bool knowsDetId(uint32_t) const;
 		
-		void insert(DTCId const&, uint32_t);
+		void insert(DTCId const&, uint32_t const);
+		
+		// IMPORTANT: The following information is not stored, to preserve space in memory.
+		// As these vectors are generated each time the functions are called, you are encouraged to 
+		// either cache the results or avoid calling them in hot loops.
+		// NOTE: This vectors are unsorted
+		std::vector<DTCId>    getKnownDTCIds() const;
+		std::vector<uint32_t> getKnownDetIds() const;
 		
 		void clear();
 		
-		std::vector            <DTCId>              knownDTCIds_           ;
-		std::unordered_map     <uint32_t, uint32_t> cablingMapDetIdToDTCIdIndex_;
-		std::unordered_multimap<DTCId, uint32_t>    cablingMapDTCIdToDetId_;
+	private:
+		std::unordered_map     <uint32_t, DTCId> cablingMapDetIdToDTCId_;
+		std::unordered_multimap<DTCId, uint32_t> cablingMapDTCIdToDetId_;
 		
 		COND_SERIALIZABLE;
 };

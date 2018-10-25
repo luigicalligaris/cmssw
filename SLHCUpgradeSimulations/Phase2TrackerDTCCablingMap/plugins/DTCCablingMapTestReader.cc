@@ -87,22 +87,36 @@ void DTCCablingMapTestReader::analyze(const edm::Event& iEvent, const edm::Event
 	iSetup.get<OuterTrackerDTCCablingMapRcd>().get( outerTrackerDTCCablingMapHandle );
 	OuterTrackerDTCCablingMap const* p_outerTrackerDTCCablingMap = outerTrackerDTCCablingMapHandle.product();
 	
-	
-	cout << "Det To DTC elements:" << endl;
-	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDetIdToDTCIdIndex_)
 	{
-		cout << "(" << map_it.first << "," << p_outerTrackerDTCCablingMap->knownDTCIds_[map_it.second].name() << "), ";
+		cout << "Det To DTC map elements dump (Python-style):" << endl;
+		std::vector<uint32_t> const knownDetIds = p_outerTrackerDTCCablingMap->getKnownDetIds();
+		
+		cout << "{";
+		for (uint32_t detId : knownDetIds)
+		{
+			DTCId const associatedDTC = p_outerTrackerDTCCablingMap->detIdToDTCId(detId);
+			cout << detId << " : " << associatedDTC.dtc_number() << ", ";
+		}
+		cout << "}" << endl;
 	}
-	cout << endl;
 	
-	
-	cout << "DTC To Det elements:" << endl;
-	for (auto const& map_it : p_outerTrackerDTCCablingMap->cablingMapDTCIdToDetId_)
 	{
-		cout << "(" << map_it.first.name() << "," << map_it.second << "), ";
+		cout << "DTC To Det map elements dump (Python-style):" << endl;
+		std::vector<DTCId> const knownDTCIds = p_outerTrackerDTCCablingMap->getKnownDTCIds();
+		
+		cout << "{";
+		for (DTCId currentDTC : knownDTCIds)
+		{
+			cout << currentDTC.dtc_number() << " : [";
+			auto equal_range = p_outerTrackerDTCCablingMap->dtcIdToDetId(currentDTC);
+			
+			for (auto it = equal_range.first; it != equal_range.second; ++it)
+				cout << it->second << ", ";
+			
+			cout << "], ";
+		}
+		cout << "}" << endl;
 	}
-	cout << endl;
-	
 }
 
 

@@ -233,11 +233,12 @@ void DTCCablingMapProducer::LoadModulesToDTCCablingMapFromCSV(std::vector<std::s
 						throw e;
 					}
 					
-					DTCId dtcId( csvColumn[csvFormat_idtcid_] );
+					unsigned short const dtc_number = strtoul(csvColumn[csvFormat_idtcid_].c_str(), nullptr, 10);
+					DTCId dtcId( dtc_number );
 					
 					if (verbosity_ >= 3)
 					{
-						cout << "-- DetId = " << detIdRaw << " dtcId = " << dtcId.name() << endl;
+						cout << "-- DetId = " << detIdRaw << " dtcId = " << dtcId.dtc_number() << endl;
 					}
 					
 					{
@@ -310,7 +311,7 @@ void DTCCablingMapProducer::analyze(const edm::Event& iEvent, const edm::EventSe
 			if (pOuterTrackerDTCCablingMap_->knowsDetId(rawStackId))
 			{
 				
-				DTCId const & dtcId = pOuterTrackerDTCCablingMap_->detIdToDTC(rawStackId);
+				DTCId const & dtcId = pOuterTrackerDTCCablingMap_->detIdToDTCId(rawStackId);
 				
 				pOuterTrackerDTCCablingMap_->insert(dtcId, rawDetId);
 			}

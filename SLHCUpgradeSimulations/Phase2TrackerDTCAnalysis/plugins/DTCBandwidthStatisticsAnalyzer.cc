@@ -19,6 +19,7 @@ Implementation:
 #include <memory>
 #include <utility>
 #include <algorithm>
+#include <iterator>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -136,6 +137,7 @@ class DTCBandwidthStatisticsAnalyzer : public edm::one::EDAnalyzer<edm::one::Sha
 		TProfile* hprof1_nstubs_per_dtc_    ;
 		
 		std::unordered_map<DTCId, unsigned int> dtcBinningMap_;
+		std::vector<DTCId> knownDTCIds_;
 		
 		edm::ESHandle<OuterTrackerDTCCablingMap> outerTrackerDTCCablingMapHandle_;
 		
@@ -213,7 +215,8 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 	{
 		firstEvent = false;
 		
-		size_t const numDTCs = outerTrackerDTCCablingMapHandle_->knownDTCIds_.size();
+		knownDTCIds_ = outerTrackerDTCCablingMapHandle_->getKnownDTCIds();
+		size_t const numDTCs = knownDTCIds_.size();
 		
 		// Instantiate the histograms
 		tfs_dir_hardware_ = fs_->mkdir("Hardware");
@@ -251,22 +254,21 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		
 		
 		// Fill Hardware histograms
-		for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+		for (auto const& dtc_ref : knownDTCIds_)
 		{
-			size_t const nModules = outerTrackerDTCCablingMapHandle_->cablingMapDTCIdToDetId_.count(dtc_ref);
+			auto itpair = outerTrackerDTCCablingMapHandle_->dtcIdToDetId(dtc_ref);
 			
-			h1_nmodules_per_dtc_     ->Fill(dtc_ref.name(), nModules);
+			size_t const nModules = std::distance(itpair.first, itpair.second);
+			
+			h1_nmodules_per_dtc_     ->Fill(dtc_ref.dtc_number(), nModules);
 		}
 		
 		
 		// Prepare bins in rate histograms
-		std::vector<DTCId> sortedKnownDTCs(outerTrackerDTCCablingMapHandle_->knownDTCIds_.begin(),outerTrackerDTCCablingMapHandle_->knownDTCIds_.end());
+		std::vector<DTCId> sortedKnownDTCs(knownDTCIds_.begin(),knownDTCIds_.end());
 		std::sort(sortedKnownDTCs.begin(), sortedKnownDTCs.end(), [&](DTCId const& lhs,DTCId const& rhs)
 			{
-				std::string const lhs_name(lhs.name());
-				std::string const rhs_name(rhs.name());
-				
-				return std::lexicographical_compare(lhs_name.begin(), lhs_name.end(), rhs_name.begin(), rhs_name.end());
+				return lhs.dtc_number() < rhs.dtc_number();
 			}
 		);
 		
@@ -280,16 +282,16 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		
 		for (auto const& dtc_ref : sortedKnownDTCs)
 		{
-			hmax1_nhits_per_dtc_      ->Fill(dtc_ref.name(), 0.0);
-			hmax1_nclusters_per_dtc_  ->Fill(dtc_ref.name(), 0.0);
-			hmax1_nstubs_per_dtc_     ->Fill(dtc_ref.name(), 0.0);
-			h2_daqrate_per_dtc_       ->Fill(dtc_ref.name(), 0.0, 0.0);
-			h2_nhits_per_dtc_         ->Fill(dtc_ref.name(), 0.0, 0.0);
-			h2_nclusters_per_dtc_     ->Fill(dtc_ref.name(), 0.0, 0.0);
-			h2_nstubs_per_dtc_        ->Fill(dtc_ref.name(), 0.0, 0.0);
-			hprof1_nhits_per_dtc_     ->Fill(dtc_ref.name(), 0.0, 0.0);
-			hprof1_nclusters_per_dtc_ ->Fill(dtc_ref.name(), 0.0, 0.0);
-			hprof1_nstubs_per_dtc_    ->Fill(dtc_ref.name(), 0.0, 0.0);
+			hmax1_nhits_per_dtc_      ->Fill(dtc_ref.dtc_number(), 0.0);
+			hmax1_nclusters_per_dtc_  ->Fill(dtc_ref.dtc_number(), 0.0);
+			hmax1_nstubs_per_dtc_     ->Fill(dtc_ref.dtc_number(), 0.0);
+			h2_daqrate_per_dtc_       ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			h2_nhits_per_dtc_         ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			h2_nclusters_per_dtc_     ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			h2_nstubs_per_dtc_        ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			hprof1_nhits_per_dtc_     ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			hprof1_nclusters_per_dtc_ ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
+			hprof1_nstubs_per_dtc_    ->Fill(dtc_ref.dtc_number(), 0.0, 0.0);
 			
 			max_nclusters_per_dtc_[dtc_ref] = 0;
 			max_nhits_per_dtc_    [dtc_ref] = 0;
@@ -308,7 +310,7 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 	std::unordered_map<DTCId, unsigned int> stuCounts;
 	std::unordered_map<DTCId, double>       bitCounts;
 	
-	for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+	for (auto const& dtc_ref : knownDTCIds_)
 	{
 		hitCounts[dtc_ref] = 0;
 		cluCounts[dtc_ref] = 0;
@@ -324,7 +326,7 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
-			DTCId const& hitDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
+			DTCId const& hitDTC = outerTrackerDTCCablingMapHandle_->detIdToDTCId(detId);
 			
 			std::size_t const nhits = hit_detset.size();
 			
@@ -360,7 +362,7 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
-			DTCId const& cluDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
+			DTCId const& cluDTC = outerTrackerDTCCablingMapHandle_->detIdToDTCId(detId);
 			
 			cluCounts[cluDTC] += nclus;
 			bitCounts[cluDTC] += bits;
@@ -395,14 +397,14 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 			if ( (disk == 4) && ( (ring >= 1) && (ring <= 2) ) ) ignoreStubs = true;
 			if ( (disk == 5) && ( (ring >= 1) && (ring <= 3) ) ) ignoreStubs = true;
 		}
-#else
+// #else
 		bool ignoreStubs = false;
 #endif
 		
 		
 		if (outerTrackerDTCCablingMapHandle_->knowsDetId(detId))
 		{
-			DTCId const& stuDTC = outerTrackerDTCCablingMapHandle_->detIdToDTC(detId);
+			DTCId const& stuDTC = outerTrackerDTCCablingMapHandle_->detIdToDTCId(detId);
 			
 			std::size_t const nstubs = stu_detset.size();
 			
@@ -425,43 +427,47 @@ void DTCBandwidthStatisticsAnalyzer::analyze(edm::Event const& iEvent, edm::Even
 	}
 	
 	// Fill the histograms
-	for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+	for (auto const& dtc_ref : knownDTCIds_)
 	{
 		max_nclusters_per_dtc_[dtc_ref] = std::max(max_nclusters_per_dtc_[dtc_ref] , hitCounts[dtc_ref]);
 		max_nhits_per_dtc_    [dtc_ref] = std::max(max_nhits_per_dtc_    [dtc_ref] , cluCounts[dtc_ref]);
 		max_nstubs_per_dtc_   [dtc_ref] = std::max(max_nstubs_per_dtc_   [dtc_ref] , stuCounts[dtc_ref]);
 		
-		h2_nhits_per_dtc_     ->Fill(dtc_ref.name(), double(hitCounts[dtc_ref]), 1.0);
-		h2_nclusters_per_dtc_ ->Fill(dtc_ref.name(), double(cluCounts[dtc_ref]), 1.0);
-		h2_nstubs_per_dtc_    ->Fill(dtc_ref.name(), double(stuCounts[dtc_ref]), 1.0);
+		h2_nhits_per_dtc_     ->Fill(dtc_ref.dtc_number(), double(hitCounts[dtc_ref]), 1.0);
+		h2_nclusters_per_dtc_ ->Fill(dtc_ref.dtc_number(), double(cluCounts[dtc_ref]), 1.0);
+		h2_nstubs_per_dtc_    ->Fill(dtc_ref.dtc_number(), double(stuCounts[dtc_ref]), 1.0);
 			
-		hprof1_nhits_per_dtc_    ->Fill(dtc_ref.name(), double(hitCounts[dtc_ref]), 1.0);
-		hprof1_nclusters_per_dtc_->Fill(dtc_ref.name(), double(cluCounts[dtc_ref]), 1.0);
-		hprof1_nstubs_per_dtc_   ->Fill(dtc_ref.name(), double(stuCounts[dtc_ref]), 1.0);
+		hprof1_nhits_per_dtc_    ->Fill(dtc_ref.dtc_number(), double(hitCounts[dtc_ref]), 1.0);
+		hprof1_nclusters_per_dtc_->Fill(dtc_ref.dtc_number(), double(cluCounts[dtc_ref]), 1.0);
+		hprof1_nstubs_per_dtc_   ->Fill(dtc_ref.dtc_number(), double(stuCounts[dtc_ref]), 1.0);
 		
 		double const daqrate = (bitCounts[dtc_ref]+960000)/1000000;
 		
-		h2_daqrate_per_dtc_->Fill(dtc_ref.name(), daqrate, 1.0);
+		h2_daqrate_per_dtc_->Fill(dtc_ref.dtc_number(), daqrate, 1.0);
 		
-		if (strstr(dtc_ref.name(),"2S"))
-		{
-		  const char * pch = strstr (dtc_ref.name(),"_2S");
-		  --pch;
-		  dthdatarate[atoi(pch)+9] += daqrate;
-		}
-		else if (strstr(dtc_ref.name(),"PS"))
-		{
-		  const char * pch = strstr (dtc_ref.name(),"_PS");
-		  --pch;
-		  dthdatarate[atoi(pch)] += daqrate;
-			
-			if (strstr(dtc_ref.name(),"_PS10G_2")) {
-				h1_nstubs_in_ps10g_2_->Fill(double(stuCounts[dtc_ref]));
-			}
-			if (strstr(dtc_ref.name(),"_PS10G_1")) {
-				h1_nstubs_in_ps10g_1_->Fill(double(stuCounts[dtc_ref]));
-			}
-		}
+		
+		
+// 		if (strstr(dtc_ref.dtc_number(),"2S"))
+// 		{
+// 		  const char * pch = strstr (dtc_ref.dtc_number(),"_2S");
+// 		  --pch;
+// 		  dthdatarate[atoi(pch)+9] += daqrate;
+// 		}
+// 		else if (strstr(dtc_ref.dtc_number(),"PS"))
+// 		{
+// 		  const char * pch = strstr (dtc_ref.dtc_number(),"_PS");
+// 		  --pch;
+// 		  dthdatarate[atoi(pch)] += daqrate;
+// 			
+// 			if (strstr(dtc_ref.dtc_number(),"_PS10G_2")) {
+// 				h1_nstubs_in_ps10g_2_->Fill(double(stuCounts[dtc_ref]));
+// 			}
+// 			if (strstr(dtc_ref.dtc_number(),"_PS10G_1")) {
+// 				h1_nstubs_in_ps10g_1_->Fill(double(stuCounts[dtc_ref]));
+// 			}
+// 		}
+		
+		
 	}
 	
 	for (std::size_t i = 0; i < ndth; i++)
@@ -477,15 +483,15 @@ void DTCBandwidthStatisticsAnalyzer::endRun(edm::Run const& iRun, edm::EventSetu
 
 void DTCBandwidthStatisticsAnalyzer::endJob() 
 {
-	for (auto const& dtc_ref : outerTrackerDTCCablingMapHandle_->knownDTCIds_)
+	for (auto const& dtc_ref : knownDTCIds_)
 	{
 // 		hmax1_nclusters_per_dtc_ ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
 // 		hmax1_nhits_per_dtc_     ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
 // 		hmax1_nstubs_per_dtc_    ->SetBinContent(dtcBinningMap_[dtc_ref], 0.0);
 		
-		hmax1_nclusters_per_dtc_ ->Fill(dtc_ref.name(), max_nclusters_per_dtc_[dtc_ref]);
-		hmax1_nhits_per_dtc_     ->Fill(dtc_ref.name(), max_nhits_per_dtc_    [dtc_ref]);
-		hmax1_nstubs_per_dtc_    ->Fill(dtc_ref.name(), max_nstubs_per_dtc_   [dtc_ref]);
+		hmax1_nclusters_per_dtc_ ->Fill(dtc_ref.dtc_number(), max_nclusters_per_dtc_[dtc_ref]);
+		hmax1_nhits_per_dtc_     ->Fill(dtc_ref.dtc_number(), max_nhits_per_dtc_    [dtc_ref]);
+		hmax1_nstubs_per_dtc_    ->Fill(dtc_ref.dtc_number(), max_nstubs_per_dtc_   [dtc_ref]);
 	}
 }
 

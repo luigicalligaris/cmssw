@@ -2,83 +2,16 @@
 
 #include <string>
 #include <functional>
+#include <limits>
 
-DTCId::DTCId():
-	dtc_name_     ("DEFAULT_CTOR")
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name_);
-}
+DTCId::DTCId() noexcept : dtc_number_(std::numeric_limits<unsigned short>::max()){}
+DTCId::~DTCId() noexcept {}
 
-DTCId::~DTCId() {}
+DTCId::DTCId(DTCId const& rhs) noexcept : dtc_number_(rhs.dtc_number_){}
+DTCId::DTCId(DTCId&&      rhs) noexcept : dtc_number_(rhs.dtc_number_){}
+DTCId& DTCId::operator=(DTCId const& rhs) noexcept {dtc_number_ = rhs.dtc_number_; return *this;}
+DTCId& DTCId::operator=(DTCId&&      rhs) noexcept {dtc_number_ = rhs.dtc_number_; return *this;}
 
-DTCId::DTCId(DTCId const& rhs):
-	dtc_name_hash_(rhs.dtc_name_hash_),
-	dtc_name_     (rhs.dtc_name_)
-{}
-
-DTCId::DTCId(DTCId&& rhs):
-	dtc_name_hash_(rhs.dtc_name_hash_),
-	dtc_name_     (rhs.dtc_name_)
-{}
-
-DTCId& DTCId::operator=(DTCId const& rhs)
-{
-	dtc_name_hash_ = rhs.dtc_name_hash_;
-	dtc_name_      = rhs.dtc_name_;
-	return *this;
-}
-
-DTCId& DTCId::operator=(DTCId&& rhs)
-{
-	dtc_name_hash_ = rhs.dtc_name_hash_;
-	dtc_name_      = rhs.dtc_name_;
-	return *this;
-}
-
-
-DTCId::DTCId(char const* dtc_name):
-	dtc_name_     (dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name_);
-}
-
-DTCId& DTCId::operator=(char const* dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name);
-	dtc_name_      = dtc_name;
-	return *this;
-}
-
-DTCId::DTCId(const std::string& dtc_name):
-	dtc_name_     (dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name_);
-}
-
-DTCId::DTCId(std::string&& dtc_name):
-	dtc_name_     (dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name_);
-}
-
-DTCId& DTCId::operator=(std::string const& dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name);
-	dtc_name_      = dtc_name;
-	return *this;
-}
-
-DTCId& DTCId::operator=(std::string&& dtc_name)
-{
-	std::hash<std::string> string_hasher;
-	dtc_name_hash_ = string_hasher(dtc_name);
-	dtc_name_      = dtc_name;
-	return *this;
-}
+DTCId::DTCId(unsigned short const dtc_number) noexcept : dtc_number_(dtc_number){}
+DTCId& DTCId::operator=(unsigned short const dtc_number) noexcept {dtc_number_ = dtc_number; return *this;}
 

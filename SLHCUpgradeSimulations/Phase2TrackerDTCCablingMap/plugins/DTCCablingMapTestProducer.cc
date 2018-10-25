@@ -79,10 +79,10 @@ void DTCCablingMapTestProducer::beginJob()
 	
 	OuterTrackerDTCCablingMap* pOuterTrackerDTCCablingMap_ = new OuterTrackerDTCCablingMap();
 	
-	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_1"), 11111111);
-	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_2"), 22222222);
-	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_3"), 33333333);
-	pOuterTrackerDTCCablingMap_->insert(DTCId("2_2S_3"), 44444444);
+	pOuterTrackerDTCCablingMap_->insert(DTCId(101), 11111111);
+	pOuterTrackerDTCCablingMap_->insert(DTCId(102), 22222222);
+	pOuterTrackerDTCCablingMap_->insert(DTCId(103), 33333333);
+	pOuterTrackerDTCCablingMap_->insert(DTCId(104), 44444444);
 	
 	edm::Service<cond::service::PoolDBOutputService> poolDbService;
 	

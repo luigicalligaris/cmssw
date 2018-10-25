@@ -7,33 +7,26 @@
 class DTCId
 {
 public:
-	DTCId();
-	~DTCId();
+	DTCId() noexcept;
+	~DTCId() noexcept;
 	
-	DTCId(DTCId const& rhs);
-	DTCId(DTCId&& rhs);
-	DTCId& operator=(DTCId const& rhs);
-	DTCId& operator=(DTCId&& rhs);
+	DTCId(DTCId const& rhs) noexcept;
+	DTCId(DTCId&& rhs) noexcept;
+	DTCId& operator=(DTCId const& rhs) noexcept;
+	DTCId& operator=(DTCId&& rhs) noexcept;
 	
-	DTCId(char const*);
-	DTCId& operator=(char const*);
+	DTCId(unsigned short const) noexcept;
+	DTCId& operator=(unsigned short const) noexcept;
 	
-	DTCId(std::string const&);
-	DTCId(std::string&&);
-	DTCId& operator=(std::string const&);
-	DTCId& operator=(std::string&&);
+	inline bool operator< (DTCId const& rhs) const noexcept {return dtc_number_ <  rhs.dtc_number_;}
+	inline bool operator> (DTCId const& rhs) const noexcept {return dtc_number_ >  rhs.dtc_number_;}
+	inline bool operator==(DTCId const& rhs) const noexcept {return dtc_number_ == rhs.dtc_number_;}
+	inline bool operator!=(DTCId const& rhs) const noexcept {return dtc_number_ != rhs.dtc_number_;}
 	
-	inline char const * name() const noexcept {return dtc_name_.c_str();}
-	inline std::size_t  hash() const noexcept {return dtc_name_hash_;}
-	
-	inline bool operator< (DTCId const& rhs) const noexcept {return dtc_name_hash_ <  rhs.dtc_name_hash_;}
-	inline bool operator> (DTCId const& rhs) const noexcept {return dtc_name_hash_ >  rhs.dtc_name_hash_;}
-	inline bool operator==(DTCId const& rhs) const noexcept {return dtc_name_hash_ == rhs.dtc_name_hash_ && dtc_name_ == rhs.dtc_name_;}
-	inline bool operator!=(DTCId const& rhs) const noexcept {return dtc_name_hash_ != rhs.dtc_name_hash_ || dtc_name_ != rhs.dtc_name_;}
+	inline unsigned short dtc_number() const noexcept {return dtc_number_;}
 	
 private:
-	std::size_t dtc_name_hash_;
-	std::string dtc_name_;
+	unsigned short dtc_number_;
 	
 	COND_SERIALIZABLE;
 };
@@ -43,9 +36,9 @@ namespace std
 	template <>
 	struct hash<DTCId>
 	{
-		size_t operator()(const DTCId& k) const
+		size_t operator()(const DTCId& k) const noexcept
 		{
-			return k.hash();
+			return k.dtc_number();
 		}
 	};
 }
